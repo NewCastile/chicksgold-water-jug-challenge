@@ -55,6 +55,8 @@ with less iterations.
 You can find my trial an error process in the chicks-water-jug-challenge.png image located in assests
 folder.
 
+**Remainder**: To make another test yo have to reload the page.
+
 ## About testing
 
 Im new to testing and to be fair this was a real challenge for me, not only did i run out of time but most
