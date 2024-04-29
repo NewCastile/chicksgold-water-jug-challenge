@@ -1,86 +1,89 @@
-import { OperableBucket } from "../types"
+import { IOperableBucket } from "../types"
 
 export const transfer = ({
-  fillingBucket,
+  pouringBucket,
   toFillBucket,
 }: {
-  fillingBucket: OperableBucket
-  toFillBucket: OperableBucket
+  pouringBucket: IOperableBucket
+  toFillBucket: IOperableBucket
 }) => {
   // filling bucket is empty, fill it first
-  if (fillingBucket.currentGallons === 0) {
+  if (pouringBucket.currentGallons === 0) {
     const fillBucketStep = {
-      ...fillingBucket,
-      currentGallons: fillingBucket.capacity,
+      ...pouringBucket,
+      currentGallons: pouringBucket.capacity,
     }
 
     return [fillBucketStep, toFillBucket]
   }
 
+  // toFillBucket is full, empty it first
   if (toFillBucket.currentGallons === toFillBucket.capacity) {
     const toFillBucketStep = { ...toFillBucket, currentGallons: 0 }
 
-    return [fillingBucket, toFillBucketStep]
-  } else {
-    // fillingBucket can transfer
-    // toFillBucket is full, empty it first
-    if (toFillBucket.currentGallons === 0) {
-      if (fillingBucket.currentGallons < toFillBucket.capacity) {
-        const newFillingBucket = {
-          ...fillingBucket,
-          currentGallons: 0,
-        }
-        const newToFillBucket = {
-          ...toFillBucket,
-          currentGallons: fillingBucket.currentGallons,
-        }
+    return [pouringBucket, toFillBucketStep]
+  }
 
-        return [newFillingBucket, newToFillBucket]
+  // pouringBucket can transfer
+  if (toFillBucket.currentGallons === 0) {
+    // fill the other bucket completely
+    if (pouringBucket.currentGallons <= toFillBucket.capacity) {
+      const newPouringBucket = {
+        ...pouringBucket,
+        currentGallons: 0,
       }
-      // fill the other bucket completely
-      if (fillingBucket.currentGallons > toFillBucket.capacity) {
-        const fillinBucketRemainingGalons = Math.abs(
-          fillingBucket.currentGallons - toFillBucket.capacity
-        )
-        const newFillingBucket = {
-          ...fillingBucket,
-          currentGallons: fillinBucketRemainingGalons,
-        }
-        const newToFillBucket = {
-          ...toFillBucket,
-          currentGallons: toFillBucket.capacity,
-        }
-
-        return [newFillingBucket, newToFillBucket]
-      }
-    }
-
-    if (
-      fillingBucket.currentGallons + toFillBucket.currentGallons >=
-      toFillBucket.capacity
-    ) {
-      const amountToPour = Math.abs(
-        toFillBucket.currentGallons - toFillBucket.capacity
-      )
-      const newFillingBucket = {
-        ...fillingBucket,
-        currentGallons: Math.abs(amountToPour - fillingBucket.currentGallons),
-      }
-      const newtoFillBucket = {
+      const newToFillBucket = {
         ...toFillBucket,
-        currentGallons: amountToPour + toFillBucket.currentGallons,
+        currentGallons: pouringBucket.currentGallons,
       }
 
-      return [newFillingBucket, newtoFillBucket]
+      return [newPouringBucket, newToFillBucket]
+    } else {
+      const pouringBucketRemainingGalons = Math.abs(
+        pouringBucket.currentGallons - toFillBucket.capacity
+      )
+      const newPouringBucket = {
+        ...pouringBucket,
+        currentGallons: pouringBucketRemainingGalons,
+      }
+      const newToFillBucket = {
+        ...toFillBucket,
+        currentGallons: toFillBucket.capacity,
+      }
+
+      return [newPouringBucket, newToFillBucket]
+    }
+  }
+
+  if (
+    pouringBucket.currentGallons + toFillBucket.currentGallons >=
+    toFillBucket.capacity
+  ) {
+    const amountToPour = Math.abs(
+      toFillBucket.currentGallons - toFillBucket.capacity
+    )
+
+    const pouringBucketRemainingGalons = Math.abs(
+      amountToPour - pouringBucket.currentGallons
+    )
+    const newPouringBucket = {
+      ...pouringBucket,
+      currentGallons: pouringBucketRemainingGalons,
+    }
+    const newtoFillBucket = {
+      ...toFillBucket,
+      currentGallons: amountToPour + toFillBucket.currentGallons,
     }
 
-    const newFillingBucket = { ...fillingBucket, currentGallons: 0 }
+    return [newPouringBucket, newtoFillBucket]
+  } else {
+    const newPouringBucket = { ...pouringBucket, currentGallons: 0 }
     const newToFillBucket = {
       ...toFillBucket,
       currentGallons:
-        fillingBucket.currentGallons + toFillBucket.currentGallons,
+        pouringBucket.currentGallons + toFillBucket.currentGallons,
     }
 
-    return [newFillingBucket, newToFillBucket]
+    return [newPouringBucket, newToFillBucket]
   }
 }
