@@ -1,10 +1,13 @@
-import { useEffect, useState } from "react"
+import { useEffect, useMemo, useState } from "react"
 
+import { ErrorMessage } from "./components/ErrorMesssage"
+import { Form } from "./components/Form"
 import { SolutionTrack } from "./components/SolutionTrack"
 import { POURING_BUCKET_TEMPLATE, TO_FILL_BUCKET_TEMPLATE } from "./data"
 import { useTrack } from "./hooks/useTrack"
-import { OperableBucket, ProblemParameters } from "./types"
+import { IProblemParameters, TSolutionTrack } from "./types"
 import { validateForm } from "./utils/form-validation"
+
 import "./App.css"
 
 function App() {
@@ -17,59 +20,64 @@ function App() {
     capacity: 0,
   })
 
-  const {
-    track: trackA,
-    setTrack: setTrackA,
-    trackIsFinished: trackAIsFinished,
-    trackIterations: trackAIterations,
-    trackProcessDescription: trackAProcessDescription,
-  } = useTrack({
+  const [solutionTrack, setSolutionTrack] = useState<TSolutionTrack>({
+    trackProcessDescription: "",
+    trackSteps: [],
+    trackStepsTaken: 0,
+  })
+
+  const stopCondition = useMemo(() => {
+    return solutionTrack.trackSteps.length > 0
+  }, [solutionTrack])
+
+  const trackA = useTrack({
     target: target,
+    stopCondition,
     trackProcessDescription: "Fill X and transfer to Y",
   })
 
-  const {
-    track: trackB,
-    setTrack: setTrackB,
-    trackIsFinished: trackBIsFinished,
-    trackIterations: trackBIterations,
-    trackProcessDescription: trackBProcessDescription,
-  } = useTrack({
+  const trackB = useTrack({
     target: target,
+    stopCondition,
     trackProcessDescription: "Fill Y and transfer to X",
   })
 
-  const [solutionTrack, setSolutionTrack] = useState<OperableBucket[][]>([])
-  const [solutionTrackProcessDescription, setSolutionTrackProcessDescription] =
-    useState<string>("")
-
   useEffect(() => {
-    if (trackA.length && trackB.length) {
-      const optimalSolution = trackA.length > trackB.length ? trackB : trackA
-      const optimalSolutionProcessDescription =
-        trackA.length > trackB.length
-          ? trackBProcessDescription
-          : trackAProcessDescription
+    if (stopCondition) {
+      setIsEvaluating(false)
 
-      setSolutionTrack(optimalSolution)
-      setSolutionTrackProcessDescription(optimalSolutionProcessDescription)
+      return
     }
-  }, [
-    trackA,
-    trackB,
-    trackAIsFinished,
-    trackBIsFinished,
-    trackAProcessDescription,
-    trackBProcessDescription,
-  ])
+    if (trackA.trackIsFinished) {
+      setIsEvaluating(false)
+      setSolutionTrack({
+        trackSteps: trackA.trackSteps,
+        trackProcessDescription: trackA.trackProcessDescription,
+        trackStepsTaken: trackA.trackStepsTaken,
+      })
+
+      return
+    }
+    if (trackB.trackIsFinished) {
+      setIsEvaluating(false)
+      setSolutionTrack({
+        trackSteps: trackB.trackSteps,
+        trackProcessDescription: trackB.trackProcessDescription,
+        trackStepsTaken: trackB.trackStepsTaken,
+      })
+
+      return
+    }
+  }, [stopCondition, trackA, trackB])
 
   const startSolution = ({
     bucketXCapacity,
     bucketYCapacity,
     targetCapacity,
-  }: ProblemParameters) => {
+  }: IProblemParameters) => {
     setIsEvaluating(true)
-    setTrackA((old) =>
+    setTarget((old) => ({ ...old, capacity: targetCapacity }))
+    trackA.setTrackSteps((old) =>
       old.concat([
         [
           { ...POURING_BUCKET_TEMPLATE, capacity: bucketXCapacity },
@@ -77,7 +85,7 @@ function App() {
         ],
       ])
     )
-    setTrackB((old) =>
+    trackB.setTrackSteps((old) =>
       old.concat([
         [
           { ...POURING_BUCKET_TEMPLATE, capacity: bucketYCapacity },
@@ -85,7 +93,6 @@ function App() {
         ],
       ])
     )
-    setTarget((old) => ({ ...old, capacity: targetCapacity }))
   }
 
   const handleFormSubmit = (event: React.FormEvent<HTMLFormElement>) => {
@@ -105,90 +112,27 @@ function App() {
     if (!success) {
       setError(message)
       setIsEvaluating(false)
+
+      return
     }
 
     startSolution({ bucketXCapacity, bucketYCapacity, targetCapacity })
   }
 
+  const handleErroMessageButtonOnClick = (
+    event: React.MouseEvent<HTMLButtonElement, MouseEvent>
+  ) => {
+    event.preventDefault()
+    setError("")
+  }
+
   return (
     <main className={"w-full flex-col items-center justify-start space-y-4"}>
-      <form
-        className={"flex flex-row items-center justify-center gap-8"}
-        onSubmit={handleFormSubmit}
-      >
-        <div className={"flex flex-col items-center justify-center gap-2"}>
-          <label htmlFor={"bucket-x"}>Bucket X</label>
-          <input
-            required
-            disabled={isEvaluating}
-            id={"bucket-x"}
-            min={1}
-            name={"bucket-x"}
-            placeholder={""}
-            step={1}
-            type={"number"}
-          />
-        </div>
-        <div className={"flex flex-col items-center justify-center gap-2"}>
-          <label htmlFor={"bucket-y"}>Bucket Y</label>
-          <input
-            required
-            disabled={isEvaluating}
-            id={"bucket-y"}
-            min={1}
-            name={"bucket-y"}
-            placeholder={""}
-            step={1}
-            type={"number"}
-          />
-        </div>
-        <div>
-          <span
-            className={"inline-flex items-center justify-center align-middle"}
-          >
-            =
-          </span>
-        </div>
-        <div className={"flex flex-col items-center justify-center gap-2"}>
-          <label htmlFor={"target"}>Target</label>
-          <input
-            required
-            disabled={isEvaluating}
-            id={"target"}
-            min={1}
-            name={"target"}
-            placeholder={""}
-            step={1}
-            type={"number"}
-          />
-        </div>
-        <button type={"submit"}>evaluate</button>
-      </form>
-      {error && <p>{error}</p>}
-      <div className={"grid grid-cols-3"}>
-        <div
-          className={"flex h-full flex-col items-center justify-start gap-4"}
-        >
-          <pre>{trackAProcessDescription}</pre>
-          <pre>Iterations: {trackAIterations}</pre>
-          <SolutionTrack {...{ solutionTrack: trackA }} />
-        </div>
-        <div
-          className={"flex h-full flex-col items-center justify-start gap-4"}
-        >
-          <pre>{trackBProcessDescription}</pre>
-          <pre>Iterations: {trackBIterations}</pre>
-          <SolutionTrack {...{ solutionTrack: trackB }} />
-        </div>
-        <div
-          className={"flex h-full flex-col items-center justify-start gap-4"}
-        >
-          <pre>Optimal Solution</pre>
-          <pre className={"underline decoration-red-500 decoration-4"}>
-            {solutionTrackProcessDescription}
-          </pre>
-          <SolutionTrack {...{ solutionTrack: solutionTrack }} />
-        </div>
+      <Form {...{ disabled: isEvaluating, handleFormSubmit }} />
+      <ErrorMessage {...{ error, handleErroMessageButtonOnClick }} />
+      <div className={"flex h-full flex-col items-center justify-start gap-4"}>
+        <pre>Optimal Solution</pre>
+        <SolutionTrack {...{ track: solutionTrack }} />
       </div>
     </main>
   )
