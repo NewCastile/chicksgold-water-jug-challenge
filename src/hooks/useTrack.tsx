@@ -1,66 +1,96 @@
 import { useEffect, useMemo, useState } from "react"
 
 import { MAX_ITERATIONS } from "../data"
-import { Bucket, OperableBucket } from "../types"
+import { IOperableBucket, IUseTrackArguments } from "../types"
 import { isEmpty } from "../utils/array-is-empty"
 import { transfer } from "../utils/transfer"
 
 export const useTrack = ({
   target,
+  stopCondition,
   trackProcessDescription,
-}: {
-  target: Bucket
-  trackProcessDescription: string
-}) => {
-  const [track, setTrack] = useState<OperableBucket[][]>([])
+}: IUseTrackArguments) => {
+  const [trackSteps, setTrackSteps] = useState<IOperableBucket[][]>([])
   const [trackIsFinished, setTrackIsFinished] = useState<boolean>()
 
-  const [trackIterationIndex, setTrackIterations] = useState<number>(0)
+  const [iterationIndex, setIterationsIndex] = useState<number>(0)
 
-  const trackIterations = useMemo(() => {
-    return track.length
-  }, [track])
+  const trackStepsTaken = useMemo(() => {
+    return trackSteps.length
+  }, [trackSteps])
+
+  const [stringifiedTrackSteps, setStringifiedtrackSteps] = useState<string[]>(
+    []
+  )
 
   useEffect(() => {
-    if (trackIterationIndex < MAX_ITERATIONS) {
-      if (isEmpty(track)) return
+    if (trackSteps.length > 0) {
+      const lastTrackStep = trackSteps.slice(-1)
+      const stringifedLastTrackStep = JSON.stringify(lastTrackStep)
+
+      setStringifiedtrackSteps((old) => old.concat(stringifedLastTrackStep))
+    }
+  }, [trackSteps])
+
+  useEffect(() => {
+    if (stopCondition) {
+      return
+    }
+    if (trackIsFinished) return
+    if (iterationIndex < MAX_ITERATIONS) {
+      if (isEmpty(trackSteps)) return
 
       const { capacity: targetCapacity } = target
 
-      const [trackALastStep] = track.slice(-1)
+      const [trackLastStep] = trackSteps.slice(-1)
 
       if (
-        trackALastStep.some(
-          (bucket) => bucket.currentGallons === targetCapacity
-        )
+        trackLastStep.some((bucket) => bucket.currentGallons === targetCapacity)
       ) {
         setTrackIsFinished(true)
-
-        return
       }
 
-      const [lastTrackABucketX, lastTrackABucketY] = trackALastStep
+      const [lastTrackABucketX, lastTrackABucketY] = trackLastStep
 
-      const transferFromXtoYStep = transfer({
-        fillingBucket: lastTrackABucketX,
+      const nextTrackStep = transfer({
+        pouringBucket: lastTrackABucketX,
         toFillBucket: lastTrackABucketY,
       })
 
-      const [newTrackABucketX, newTrackABucketY] = transferFromXtoYStep
+      const stringifiedNextTrackStep = JSON.stringify(nextTrackStep)
 
-      setTrack((old) => old.concat([[newTrackABucketX, newTrackABucketY]]))
+      // End the loop in case the next step has been taken
+      if (
+        stringifiedTrackSteps.some(
+          (trackStepTaken) => trackStepTaken === stringifiedNextTrackStep
+        )
+      ) {
+        return
+      }
+
+      const [newTrackBucketX, newTrackBucketY] = nextTrackStep
+
+      setTrackSteps((old) => old.concat([[newTrackBucketX, newTrackBucketY]]))
     }
-  }, [target, track, trackIterationIndex])
+  }, [
+    iterationIndex,
+    stopCondition,
+    stringifiedTrackSteps,
+    target,
+    trackIsFinished,
+    trackSteps,
+  ])
 
   useEffect(() => {
-    setTrackIterations((old) => old + 1)
-  }, [track])
+    setIterationsIndex((old) => old + 1)
+  }, [trackSteps])
 
   return {
-    track,
-    setTrack,
+    trackSteps,
+    setTrackSteps,
+    stringifiedTrackSteps,
     trackProcessDescription,
-    trackIterations,
+    trackStepsTaken,
     trackIsFinished,
   }
 }

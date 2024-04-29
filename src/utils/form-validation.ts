@@ -1,4 +1,4 @@
-import { FormValidationResult, ProblemParameters } from "../types"
+import { IFormValidationResult, IProblemParameters } from "../types"
 
 import { calculateGCD } from "./calculate-gcd"
 
@@ -6,7 +6,7 @@ export const validateForm = ({
   bucketXCapacity,
   bucketYCapacity,
   targetCapacity,
-}: ProblemParameters): FormValidationResult => {
+}: IProblemParameters): IFormValidationResult => {
   if (
     [bucketXCapacity, bucketYCapacity, targetCapacity].some(
       (capacity) => capacity === 0
