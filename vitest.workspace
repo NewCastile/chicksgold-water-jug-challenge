@@ -1,0 +1,19 @@
+import { defineWorkspace } from "vitest/config.d.ts"
+
+export default defineWorkspace([
+  // you can use a list of glob patterns to define your workspaces
+  // Vitest expects a list of config files
+  // or directories where there is a config file
+  "packages/*",
+
+  {
+    extends: "./vite.config.js",
+    test: {
+      name: "optimal-solution",
+      root: "./tests/e2e",
+      environment: "happy-dom",
+      include: ["tests/e2e/**/*.{browser}.test.{ts,js,tsx,jsx}"],
+      setupFiles: ["./setup.happy-dom.ts"],
+    },
+  },
+])
