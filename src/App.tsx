@@ -11,6 +11,7 @@ import { validateForm } from "./utils/form-validation"
 import "./App.css"
 
 function App() {
+  // Boolean used to disable the form elements after the operation starts
   const [isEvaluating, setIsEvaluating] = useState<boolean>(false)
 
   const [error, setError] = useState<string>("")
@@ -42,6 +43,7 @@ function App() {
     trackProcessDescription: "Fill Y and transfer to X",
   })
 
+  // Sets the solution track and enables the form elements again
   useEffect(() => {
     if (stopCondition) {
       setIsEvaluating(false)
@@ -49,7 +51,6 @@ function App() {
       return
     }
     if (trackA.trackIsFinished) {
-      setIsEvaluating(false)
       setSolutionTrack({
         trackSteps: trackA.trackSteps,
         trackProcessDescription: trackA.trackProcessDescription,
@@ -59,7 +60,6 @@ function App() {
       return
     }
     if (trackB.trackIsFinished) {
-      setIsEvaluating(false)
       setSolutionTrack({
         trackSteps: trackB.trackSteps,
         trackProcessDescription: trackB.trackProcessDescription,
@@ -97,6 +97,11 @@ function App() {
 
   const handleFormSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault()
+
+    if (error) {
+      setError("")
+    }
+
     const formData = new FormData(event.currentTarget)
 
     const [bucketXCapacity, bucketYCapacity, targetCapacity] = Array.from(
