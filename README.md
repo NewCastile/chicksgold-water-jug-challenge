@@ -72,3 +72,10 @@ web pages by querying and interacting with DOM node including easy-to-use APIs f
 Both of this library que by used to do **E2E testing**, **unit testing** and even **React Hooks**.
 
 All the folders inside the `tests` folder whereas the E2E test are stored in the `tests/e2e` sub-folder.
+
+For e2e testing, the queryed elements has to be tagged with a `data-testid` data attribute, this makes the DOM querying
+easier and more intuitive.
+
+To separate the testing code from production the branch `vitest` was created, ensuring that no code test-related
+is present in production which made lead to all kind of problems (for example: The `data-testid` attributes leads to
+worst accesibility and SEO metrics).
