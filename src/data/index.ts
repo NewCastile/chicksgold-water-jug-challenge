@@ -1,4 +1,4 @@
-import { IOperableBucket } from "../types"
+import { IOperableBucket, TTrackProps } from "../types"
 
 export const POURING_BUCKET_TEMPLATE: IOperableBucket = {
   tag: "pouring-bucket",
@@ -10,6 +10,12 @@ export const TO_FILL_BUCKET_TEMPLATE: IOperableBucket = {
   tag: "to-fill-bucket",
   capacity: 0,
   currentGallons: 0,
+}
+
+export const SOLUTION_TRACK_MOCK_DATA: TTrackProps = {
+  trackProcessDescription: "Fill X then transfer to Y",
+  trackSteps: [],
+  trackStepsTaken: 0,
 }
 
 export const MAX_ITERATIONS = 56
