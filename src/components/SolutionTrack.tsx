@@ -1,13 +1,13 @@
-import { OperableBucket } from "../types"
+import { ISolutionTrackProps } from "../types"
 
-export const SolutionTrack = ({
-  solutionTrack,
-}: {
-  solutionTrack: OperableBucket[][]
-}) => {
+export const SolutionTrack = ({ track }: ISolutionTrackProps) => {
   return (
     <pre className={"flex w-full flex-col items-center justify-center gap-8"}>
-      {solutionTrack.map((step, stepIdx) => {
+      <pre>{track.trackProcessDescription}</pre>
+      {track.trackStepsTaken > 0 && (
+        <pre>Iterations: {track.trackStepsTaken}</pre>
+      )}
+      {track.trackSteps.map((step, stepIdx) => {
         const [a, b] = step
         const {
           tag: aTag,

@@ -1,10 +1,6 @@
-export const Form = ({
-  disabled,
-  handleFormSubmit,
-}: {
-  disabled: boolean
-  handleFormSubmit: (event: React.FormEvent<HTMLFormElement>) => void
-}) => {
+import { IFormProps } from "../types"
+
+export const Form = ({ disabled, handleFormSubmit }: IFormProps) => {
   return (
     <form
       className={"flex flex-row items-center justify-center gap-8"}

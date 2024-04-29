@@ -1,12 +1,9 @@
+import { IErrorMessageProps } from "../types"
+
 export const ErrorMessage = ({
   error,
   handleErroMessageButtonOnClick,
-}: {
-  error: string
-  handleErroMessageButtonOnClick: (
-    event: React.MouseEvent<HTMLButtonElement, MouseEvent>
-  ) => void
-}) => {
+}: IErrorMessageProps) => {
   return (
     <>
       {error && (
