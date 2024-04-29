@@ -63,9 +63,12 @@ The whole loop algorithm its made by the useTrack custom hook. This hook is resp
 of steps taken to achieve the goal and to end the loop in case the goal is achieved or the loop repeats itself at a certain point.
 In the `useTrack.tsx` file you will also find comments pointing out important information to understand the hooks functionality.
 
-## About testing
+## Testing
 
-Im new to testing and to be fair this was a real challenge for me, not only did i run out of time but most
-import i lack knowledge on this important area of web development. That aside, i will be aiming to found a
-more cosistent and simple solution for this challenge and to learn more about unit testing, so i can finally
-beat this challenge.
+For the evaluation of the most important function of the app i used **vitest** which its vite-native testing framework and
+**react-testing-library**, which a react package that contains all the necessary browser DOM manipulation API for testing
+web pages by querying and interacting with DOM node including easy-to-use APIs for several JavasScript frameworks.
+
+Both of this library que by used to do **E2E testing**, **unit testing** and even **React Hooks**.
+
+All the folders inside the `tests` folder whereas the E2E test are stored in the `tests/e2e` sub-folder.
