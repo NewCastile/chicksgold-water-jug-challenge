@@ -16,6 +16,9 @@ export const useTrack = ({
   const [iterationIndex, setIterationsIndex] = useState<number>(0)
 
   const trackStepsTaken = useMemo(() => {
+    // steps are counted after filling the pouring bucket
+    if (trackSteps.length > 0) return trackSteps.length - 1
+
     return trackSteps.length
   }, [trackSteps])
 
