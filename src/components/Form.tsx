@@ -52,7 +52,9 @@ export const Form = ({ disabled, handleFormSubmit }: IFormProps) => {
           type={"number"}
         />
       </div>
-      <button type={"submit"}>evaluate</button>
+      <button disabled={disabled} type={"submit"}>
+        evaluate
+      </button>
     </form>
   )
 }

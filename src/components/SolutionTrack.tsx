@@ -5,7 +5,7 @@ export const SolutionTrack = ({ track }: ISolutionTrackProps) => {
     <pre className={"flex w-full flex-col items-center justify-center gap-8"}>
       <pre>{track.trackProcessDescription}</pre>
       {track.trackStepsTaken > 0 && (
-        <pre>Iterations: {track.trackStepsTaken}</pre>
+        <pre>Steps taken: {track.trackStepsTaken}</pre>
       )}
       {track.trackSteps.map((step, stepIdx) => {
         const [a, b] = step
