@@ -7,7 +7,7 @@ export const ErrorMessage = ({
   return (
     <>
       {error && (
-        <p className={"text-red-500"}>
+        <p className={"text-red-500"} data-testid={"error-message"}>
           {error} <button onClick={handleErroMessageButtonOnClick}>x</button>
         </p>
       )}
