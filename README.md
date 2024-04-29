@@ -79,3 +79,5 @@ easier and more intuitive.
 To separate the testing code from production the branch `vitest` was created, ensuring that no code test-related
 is present in production which made lead to all kind of problems (for example: The `data-testid` attributes leads to
 worst accesibility and SEO metrics).
+
+To run all the test run the command `npm run test` in your terminal
