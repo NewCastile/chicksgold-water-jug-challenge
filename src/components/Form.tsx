@@ -8,6 +8,7 @@ export const Form = ({
   return (
     <form
       className={"flex flex-row items-center justify-center gap-8"}
+      data-testid={"form"}
       onReset={handleFormReset}
       onSubmit={handleFormSubmit}
     >
@@ -15,6 +16,7 @@ export const Form = ({
         <label htmlFor={"bucket-x"}>Bucket X</label>
         <input
           required
+          data-testid={"bucket-x-input"}
           disabled={disabled}
           id={"bucket-x"}
           min={1}
@@ -28,6 +30,7 @@ export const Form = ({
         <label htmlFor={"bucket-y"}>Bucket Y</label>
         <input
           required
+          data-testid={"bucket-y-input"}
           disabled={disabled}
           id={"bucket-y"}
           min={1}
@@ -48,19 +51,25 @@ export const Form = ({
         <label htmlFor={"target"}>Target</label>
         <input
           required
+          data-testid={"target-input"}
           disabled={disabled}
           id={"target"}
           min={1}
           name={"target"}
-          placeholder={""}
           step={1}
           type={"number"}
         />
       </div>
-      <button disabled={disabled} type={"submit"}>
+      <button
+        data-testid={"form-submit-button"}
+        disabled={disabled}
+        type={"submit"}
+      >
         evaluate
       </button>
-      <button type={"reset"}>reset</button>
+      <button data-testid={"form-reset-button"} type={"reset"}>
+        reset
+      </button>
     </form>
   )
 }
