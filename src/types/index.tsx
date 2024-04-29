@@ -42,6 +42,7 @@ export interface IUseTrackArguments {
 export interface IFormProps {
   disabled: boolean
   handleFormSubmit: (event: React.FormEvent<HTMLFormElement>) => void
+  handleFormReset: (event: React.FormEvent<HTMLFormElement>) => void
 }
 
 export interface ISolutionTrackProps {
