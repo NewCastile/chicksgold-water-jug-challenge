@@ -57,6 +57,12 @@ folder.
 
 **Remainder**: To make another test yo have to reload the page.
 
+## The React approach
+
+The whole loop algorithm its made by the useTrack custom hook. This hook is responsible running the loop, keeping the state
+of steps taken to achieve the goal and to end the loop in case the goal is achieved or the loop repeats itself at a certain point.
+In the `useTrack.tsx` file you will also find comments pointing out important information to understand the hooks functionality.
+
 ## About testing
 
 Im new to testing and to be fair this was a real challenge for me, not only did i run out of time but most
