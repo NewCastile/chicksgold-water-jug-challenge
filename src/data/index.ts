@@ -13,3 +13,17 @@ export const TO_FILL_BUCKET_TEMPLATE: IOperableBucket = {
 }
 
 export const MAX_ITERATIONS = 56
+
+export const VALIDATION_MESSAGES = {
+  error: {
+    capacityEqualsZero: "Specify a capacity for all the bucket",
+    capacitiesNotIntegers: "The buckets capacities must be integers >:(",
+    notEnoughCapacity:
+      "None of the jugs has enough capacity to solve the problem :'c",
+    targetNotDivisibleByGCD:
+      "It is mathematically imposible to solve this problem :'c",
+  },
+  succcess: {
+    hasSolution: "Problem has  a solution c:",
+  },
+}

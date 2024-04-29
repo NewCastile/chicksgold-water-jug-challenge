@@ -1,3 +1,4 @@
+import { VALIDATION_MESSAGES } from "../data"
 import { IFormValidationResult, IProblemParameters } from "../types"
 
 import { calculateGCD } from "./calculate-gcd"
@@ -14,7 +15,7 @@ export const validateForm = ({
   ) {
     return {
       success: false,
-      message: "Specify a capacity for all the bucket",
+      message: VALIDATION_MESSAGES.error.capacityEqualsZero,
     }
   }
 
@@ -25,7 +26,7 @@ export const validateForm = ({
   ) {
     return {
       success: false,
-      message: "The buckets capacities must be integers >:(",
+      message: VALIDATION_MESSAGES.error.capacitiesNotIntegers,
     }
   }
 
@@ -38,18 +39,18 @@ export const validateForm = ({
   if (targetCapacity > maxCapacity && targetCapacity > minCapacity) {
     return {
       success: false,
-      message: "None of the jugs has enough capacity to solve the problem :'c",
+      message: VALIDATION_MESSAGES.error.notEnoughCapacity,
     }
   }
 
   const capacitiesGCD = calculateGCD(maxCapacity, minCapacity)
 
-  if (targetCapacity % capacitiesGCD != 0) {
+  if (targetCapacity % capacitiesGCD !== 0) {
     return {
       success: false,
-      message: "It is mathematically imposible to solve this problem :'c",
+      message: VALIDATION_MESSAGES.error.targetNotDivisibleByGCD,
     }
   }
 
-  return { success: true, message: "Problem has  a solution c:" }
+  return { success: true, message: VALIDATION_MESSAGES.succcess.hasSolution }
 }
