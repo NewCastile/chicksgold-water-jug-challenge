@@ -1,8 +1,13 @@
 #root {
   width: 100%;
+  min-height: 100vh;
   max-width: 100%;
   padding: 2rem;
   text-align: center;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: center;
 }
 
 .logo {
