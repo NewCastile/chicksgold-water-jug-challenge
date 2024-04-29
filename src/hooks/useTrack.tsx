@@ -24,6 +24,12 @@ export const useTrack = ({
     []
   )
 
+  const reset = () => {
+    setTrackSteps([])
+    setTrackIsFinished(false)
+    setIterationsIndex(0)
+  }
+
   // Adds the stringified version of last step taken to the stringified steps array
   useEffect(() => {
     if (trackSteps.length > 0) {
@@ -101,5 +107,6 @@ export const useTrack = ({
     trackProcessDescription,
     trackStepsTaken,
     trackIsFinished,
+    reset,
   }
 }

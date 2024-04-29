@@ -1,9 +1,14 @@
 import { IFormProps } from "../types"
 
-export const Form = ({ disabled, handleFormSubmit }: IFormProps) => {
+export const Form = ({
+  disabled,
+  handleFormSubmit,
+  handleFormReset,
+}: IFormProps) => {
   return (
     <form
       className={"flex flex-row items-center justify-center gap-8"}
+      onReset={handleFormReset}
       onSubmit={handleFormSubmit}
     >
       <div className={"flex flex-col items-center justify-center gap-2"}>
@@ -55,6 +60,7 @@ export const Form = ({ disabled, handleFormSubmit }: IFormProps) => {
       <button disabled={disabled} type={"submit"}>
         evaluate
       </button>
+      <button type={"reset"}>reset</button>
     </form>
   )
 }
